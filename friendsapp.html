@@ -1,0 +1,1578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Shell House Homies - Birthday Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #ff6b6b;
+            --primary-dark: #ee5a52;
+            --secondary: #4ecdc4;
+            --accent: #ffe66d;
+            --purple: #a8dadc;
+            --success: #06d6a0;
+            --danger: #ef476f;
+            --dark: #1d3557;
+            --light: #f1faee;
+            --text-dark: #2b2d42;
+            --text-light: #8d99ae;
+            --shadow: 0 20px 60px rgba(0,0,0,0.15);
+            --shadow-sm: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-attachment: fixed;
+            color: var(--text-dark);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-logo {
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+
+        .loading-logo i {
+            font-size: 60px;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: logoRotate 2s linear infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes logoRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, rgba(255,107,107,0.95) 0%, rgba(78,205,196,0.95) 100%);
+            padding: 100px 20px 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.1)" d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,128C960,128,1056,192,1152,197.3C1248,203,1344,149,1392,122.7L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
+            animation: wave 10s ease-in-out infinite;
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(20px); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-logo {
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 25px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            animation: bounceIn 1s ease;
+        }
+
+        .hero-logo i {
+            font-size: 50px;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); opacity: 0; }
+            60% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            color: white;
+            margin-bottom: 20px;
+            font-weight: 800;
+            text-shadow: 2px 4px 8px rgba(0,0,0,0.2);
+            animation: slideInDown 1s ease;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: rgba(255,255,255,0.95);
+            margin-bottom: 40px;
+            animation: slideInUp 1s ease;
+        }
+
+        @keyframes slideInDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideInUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            flex-wrap: wrap;
+            animation: fadeIn 1.5s ease;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: white;
+            display: block;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .stat-label {
+            color: rgba(255,255,255,0.9);
+            font-size: 1rem;
+            margin-top: 5px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Birthday Spotlight */
+        .birthday-spotlight {
+            background: linear-gradient(135deg, #ffd93d 0%, #ff6b9d 100%);
+            border-radius: 30px;
+            padding: 50px;
+            margin-bottom: 50px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            display: none;
+            animation: slideInLeft 0.8s ease;
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .birthday-spotlight.active {
+            display: block;
+        }
+
+        .confetti-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: white;
+            animation: confettiFall 3s linear infinite;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(600px) rotate(720deg); opacity: 0; }
+        }
+
+        .spotlight-title {
+            font-size: 3rem;
+            color: white;
+            margin-bottom: 30px;
+            text-shadow: 2px 4px 8px rgba(0,0,0,0.2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .birthday-friends {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .birthday-card-mini {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-sm);
+            min-width: 250px;
+            animation: zoomIn 0.5s ease;
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+
+        .birthday-card-mini img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 5px solid var(--accent);
+            margin-bottom: 15px;
+        }
+
+        .birthday-card-mini h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .age-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .celebrate-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .celebrate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255,107,107,0.4);
+        }
+
+        /* Section Header */
+        .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 5px;
+            background: var(--accent);
+            border-radius: 3px;
+        }
+
+        /* Add Friend Form */
+        .add-friend-section {
+            background: white;
+            border-radius: 30px;
+            padding: 50px;
+            margin-bottom: 50px;
+            box-shadow: var(--shadow);
+            animation: slideInRight 0.8s ease;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group label i {
+            color: var(--primary);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(255,107,107,0.1);
+        }
+
+        .btn {
+            padding: 16px 40px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            justify-content: center;
+            box-shadow: var(--shadow-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(255,107,107,0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a1a0 100%);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(78,205,196,0.4);
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 15px 20px 15px 55px;
+            border: 2px solid white;
+            border-radius: 25px;
+            font-size: 1rem;
+            background: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 1.2rem;
+        }
+
+        .filter-select {
+            padding: 15px 25px;
+            border: 2px solid white;
+            border-radius: 25px;
+            background: white;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            font-weight: 600;
+        }
+
+        /* Friends Grid */
+        .friends-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .friend-card {
+            background: white;
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .friend-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #ffe66d);
+        }
+
+        .friend-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.2);
+        }
+
+        .friend-card.birthday-today {
+            border: 3px solid var(--accent);
+            animation: glow 2s infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 30px rgba(255,230,109,0.6); }
+            50% { box-shadow: 0 0 50px rgba(255,230,109,1); }
+        }
+
+        .friend-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 5px solid var(--primary);
+            margin: 0 auto 20px;
+            display: block;
+            object-fit: cover;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .friend-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .friend-info h3 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .friend-type-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #a8dadc, #4ecdc4);
+            color: white;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .friend-details {
+            margin: 20px 0;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .detail-row i {
+            color: var(--primary);
+            width: 25px;
+            font-size: 1.1rem;
+        }
+
+        .notes-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px 0;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            font-style: italic;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .card-actions button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-edit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102,126,234,0.4);
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #ef476f, #d62828);
+            color: white;
+        }
+
+        .btn-delete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(239,71,111,0.4);
+        }
+
+        /* Birthday Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 40px;
+            padding: 60px;
+            max-width: 700px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 30px 90px rgba(0,0,0,0.5);
+            animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            font-size: 2.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: all 0.3s;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #f8f9fa;
+        }
+
+        .modal-close:hover {
+            transform: rotate(90deg);
+            background: var(--danger);
+            color: white;
+        }
+
+        .birthday-emoji {
+            font-size: 6rem;
+            margin-bottom: 25px;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .birthday-wish-title {
+            font-size: 2.8rem;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .birthday-message {
+            font-size: 1.3rem;
+            color: var(--text-dark);
+            line-height: 2;
+            margin: 30px 0;
+            padding: 30px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Upcoming Birthdays */
+        .upcoming-section {
+            background: white;
+            border-radius: 30px;
+            padding: 50px;
+            margin-bottom: 50px;
+            box-shadow: var(--shadow);
+        }
+
+        .timeline {
+            position: relative;
+            padding: 30px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(to bottom, #ff6b6b, #4ecdc4, #ffe66d);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 100px;
+            margin-bottom: 40px;
+            animation: slideInLeft 0.6s ease;
+        }
+
+        .timeline-marker {
+            position: absolute;
+            left: 38px;
+            top: 10px;
+            width: 28px;
+            height: 28px;
+            background: white;
+            border: 4px solid var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 0 8px rgba(255,107,107,0.1);
+        }
+
+        .timeline-content {
+            background: linear-gradient(135deg, #f8f9fa, #ffffff);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s;
+        }
+
+        .timeline-content:hover {
+            transform: translateX(10px);
+            box-shadow: var(--shadow);
+        }
+
+        .timeline-date {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .timeline-name {
+            font-size: 1.5rem;
+            color: var(--text-dark);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .countdown-text {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: white;
+        }
+
+        .empty-state i {
+            font-size: 6rem;
+            margin-bottom: 30px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .empty-state p {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+
+            .hero-stats {
+                gap: 30px;
+            }
+
+            .add-friend-section,
+            .upcoming-section {
+                padding: 30px 20px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .friends-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                padding: 40px 25px;
+            }
+
+            .birthday-wish-title {
+                font-size: 2rem;
+            }
+
+            .birthday-message {
+                font-size: 1.1rem;
+            }
+
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-item {
+                padding-left: 70px;
+            }
+
+            .timeline-marker {
+                left: 8px;
+            }
+
+            .section-header h2 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Notification Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            display: none;
+            align-items: center;
+            gap: 15px;
+            z-index: 1001;
+            animation: slideInRight 0.5s ease;
+        }
+
+        .toast.show {
+            display: flex;
+        }
+
+        .toast.success {
+            border-left: 5px solid var(--success);
+        }
+
+        .toast.error {
+            border-left: 5px solid var(--danger);
+        }
+
+        .toast i {
+            font-size: 1.5rem;
+        }
+
+        .toast.success i {
+            color: var(--success);
+        }
+
+        .toast.error i {
+            color: var(--danger);
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-logo">
+            <i class="fas fa-user-friends"></i>
+        </div>
+        <div class="loading-text">The Shell House Homies</div>
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="hero-content">
+            <div class="hero-logo">
+                <i class="fas fa-users"></i>
+            </div>
+            <h1>The Shell House Homies</h1>
+            <p class="hero-subtitle">Never miss a birthday. Celebrate every friendship. Create memories that last forever.</p>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number" id="totalFriends">0</span>
+                    <span class="stat-label">Friends</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="todayBirthdays">0</span>
+                    <span class="stat-label">Today</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="upcomingCount">0</span>
+                    <span class="stat-label">Upcoming</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Birthday Spotlight -->
+        <div class="birthday-spotlight" id="birthdaySpotlight">
+            <div class="confetti-container" id="confettiContainer"></div>
+            <div class="spotlight-title">
+                🎉 Birthday Celebrations Today! 🎂
+            </div>
+            <div class="birthday-friends" id="birthdayFriendsList"></div>
+        </div>
+
+        <!-- Add Friend Section -->
+        <div class="add-friend-section">
+            <div class="section-header">
+                <h2 style="color: var(--primary); text-shadow: none;">
+                    <i class="fas fa-user-plus"></i> Add New Friend
+                </h2>
+            </div>
+            <form id="friendForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Full Name *</label>
+                        <input type="text" id="friendName" required placeholder="Enter friend's name">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-calendar-alt"></i> Date of Birth *</label>
+                        <input type="date" id="friendDob" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-image"></i> Photo URL</label>
+                        <input type="url" id="friendPhoto" placeholder="https://example.com/photo.jpg">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-heart"></i> Friendship Type *</label>
+                        <select id="friendType" required>
+                            <option value="">Select type</option>
+                            <option value="Best Friend">Best Friend</option>
+                            <option value="School Friend">School Friend</option>
+                            <option value="College Friend">College Friend</option>
+                            <option value="Office Friend">Office Friend</option>
+                            <option value="Childhood Friend">Childhood Friend</option>
+                            <option value="Close Friend">Close Friend</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-phone"></i> Phone</label>
+                        <input type="tel" id="friendPhone" placeholder="Phone number">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="friendEmail" placeholder="email@example.com">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-sticky-note"></i> Personal Notes</label>
+                    <textarea id="friendNotes" rows="3" placeholder="Special memories, inside jokes, or anything you'd like to remember..."></textarea>
+                </div>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus-circle"></i> Add Friend
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="cancelBtn" style="display: none;">
+                        <i class="fas fa-times-circle"></i> Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search friends by name...">
+            </div>
+            <select id="filterType" class="filter-select">
+                <option value="">All Friends</option>
+                <option value="Best Friend">Best Friends</option>
+                <option value="School Friend">School Friends</option>
+                <option value="College Friend">College Friends</option>
+                <option value="Office Friend">Office Friends</option>
+                <option value="Childhood Friend">Childhood Friends</option>
+                <option value="Close Friend">Close Friends</option>
+            </select>
+            <select id="sortBy" class="filter-select">
+                <option value="name">Sort by Name</option>
+                <option value="birthday">Sort by Birthday</option>
+                <option value="age">Sort by Age</option>
+            </select>
+        </div>
+
+        <!-- Friends Grid -->
+        <div class="section-header">
+            <h2><i class="fas fa-users"></i> My Friends</h2>
+        </div>
+        <div class="friends-grid" id="friendsGrid"></div>
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <i class="fas fa-user-friends"></i>
+            <h3>No Friends Added Yet</h3>
+            <p>Start building your friends directory by adding your first friend above!</p>
+        </div>
+
+        <!-- Upcoming Birthdays -->
+        <div class="upcoming-section">
+            <div class="section-header">
+                <h2 style="color: var(--primary); text-shadow: none;">
+                    <i class="fas fa-calendar-check"></i> Upcoming Birthdays
+                </h2>
+            </div>
+            <div class="timeline" id="upcomingTimeline"></div>
+        </div>
+    </div>
+
+    <!-- Birthday Modal -->
+    <div class="modal" id="birthdayModal">
+        <div class="modal-content">
+            <span class="modal-close" id="closeModal">&times;</span>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Success!</span>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, onSnapshot, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Firebase Configuration - REPLACE WITH YOUR OWN
+        const firebaseConfig = {
+              apiKey: "AIzaSyDDew880iGDPpx2giFC9RXDV6SN2m99cUk",
+  authDomain: "otp-login-app-2f5d5.firebaseapp.com",
+  projectId: "otp-login-app-2f5d5",
+  storageBucket: "otp-login-app-2f5d5.firebasestorage.app",
+  messagingSenderId: "660933750433",
+  appId: "1:660933750433:web:dacff67b6c6fae6264cae0"
+        };
+
+        // Initialize Firebase
+        let app, db;
+        try {
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+        } catch (error) {
+            console.error('Firebase initialization error:', error);
+        }
+
+        // Global State
+        let friends = [];
+        let editingId = null;
+
+        // Birthday Wishes
+        const birthdayWishes = {
+            "Best Friend": "Happy Birthday to my absolute best friend! You've been there through thick and thin, making every moment unforgettable. Here's to another year of epic adventures, late-night talks, and memories that'll last forever. Love you, bestie! 🎉💙",
+            "School Friend": "Happy Birthday, school buddy! Remember all those crazy classroom moments and study sessions? Those were the days! Wishing you an amazing year ahead filled with success and happiness. Cheers to our school memories! 🎓🎂",
+            "College Friend": "Happy Birthday to my college partner-in-crime! From dorm room hangouts to late-night study marathons, we've shared it all. May this year bring you all the success you deserve. Keep crushing it! 🎓✨",
+            "Office Friend": "Happy Birthday, work buddy! You make the 9-to-5 grind so much better. Thanks for the coffee breaks, lunch conversations, and endless support. Wishing you a fantastic year ahead both professionally and personally! 💼🎉",
+            "Childhood Friend": "Happy Birthday to my childhood companion! From playground adventures to growing up together, you've been there since day one. Here's to the memories we've made and all the new ones coming. You're irreplaceable! 🌟💛",
+            "Close Friend": "Happy Birthday to one of my closest friends! Your friendship means the world to me. Thanks for always being genuine, supportive, and amazing. May this year bring you endless joy and beautiful moments! 🎈❤️",
+            "default": "Happy Birthday, friend! Wishing you a day filled with love, laughter, and unforgettable moments. May this year bring you everything your heart desires. Celebrate big! 🎉🎂✨"
+        };
+
+        // Utility Functions
+        function calculateAge(dob) {
+            const birthDate = new Date(dob);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+        function isBirthdayToday(dob) {
+            const birthDate = new Date(dob);
+            const today = new Date();
+            return birthDate.getDate() === today.getDate() && 
+                   birthDate.getMonth() === today.getMonth();
+        }
+
+        function daysUntilBirthday(dob) {
+            const birthDate = new Date(dob);
+            const today = new Date();
+            const currentYear = today.getFullYear();
+            
+            let nextBirthday = new Date(currentYear, birthDate.getMonth(), birthDate.getDate());
+            
+            if (nextBirthday < today) {
+                nextBirthday = new Date(currentYear + 1, birthDate.getMonth(), birthDate.getDate());
+            }
+            
+            const diffTime = nextBirthday - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays;
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            const icon = toast.querySelector('i');
+            
+            toastMessage.textContent = message;
+            toast.className = `toast ${type}`;
+            
+            if (type === 'success') {
+                icon.className = 'fas fa-check-circle';
+            } else {
+                icon.className = 'fas fa-exclamation-circle';
+            }
+            
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Create Confetti
+        function createConfetti() {
+            const container = document.getElementById('confettiContainer');
+            container.innerHTML = '';
+            const colors = ['#ff6b6b', '#4ecdc4', '#ffe66d', '#a8dadc', '#f093fb'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 3 + 's';
+                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                container.appendChild(confetti);
+            }
+        }
+
+        // Show Birthday Modal
+        function showBirthdayModal(friend) {
+            const modal = document.getElementById('birthdayModal');
+            const content = document.getElementById('modalContent');
+            const age = calculateAge(friend.dob);
+            const wish = birthdayWishes[friend.friendType] || birthdayWishes.default;
+            
+            content.innerHTML = `
+                <div class="birthday-emoji">🎉🎂🎈</div>
+                <div class="birthday-wish-title">Happy ${age}${getOrdinal(age)} Birthday!</div>
+                <img src="${friend.photo || 'https://via.placeholder.com/150'}" alt="${friend.name}" class="friend-photo" style="width: 150px; height: 150px;">
+                <h2 style="font-size: 2.5rem; color: var(--primary); margin: 20px 0;">${friend.name}</h2>
+                <div class="birthday-message">${wish}</div>
+                <button class="btn btn-primary" onclick="document.getElementById('birthdayModal').classList.remove('active')">
+                    <i class="fas fa-heart"></i> Close
+                </button>
+            `;
+            
+            modal.classList.add('active');
+        }
+
+        function getOrdinal(n) {
+            const s = ["th", "st", "nd", "rd"];
+            const v = n % 100;
+            return s[(v - 20) % 10] || s[v] || s[0];
+        }
+
+        // Render Friend Card
+        function renderFriendCard(friend) {
+            const age = calculateAge(friend.dob);
+            const isBirthday = isBirthdayToday(friend.dob);
+            const daysUntil = daysUntilBirthday(friend.dob);
+            
+            const card = document.createElement('div');
+            card.className = `friend-card ${isBirthday ? 'birthday-today' : ''}`;
+            card.innerHTML = `
+                <img src="${friend.photo || 'https://via.placeholder.com/150'}" alt="${friend.name}" class="friend-photo">
+                <div class="friend-info">
+                    <h3>${friend.name}</h3>
+                    <span class="friend-type-badge">${friend.friendType}</span>
+                </div>
+                <div class="friend-details">
+                    <div class="detail-row">
+                        <i class="fas fa-birthday-cake"></i>
+                        <span>${formatDate(friend.dob)}</span>
+                    </div>
+                    <div class="detail-row">
+                        <i class="fas fa-calendar-day"></i>
+                        <span>${age} years old</span>
+                    </div>
+                    ${friend.phone ? `
+                        <div class="detail-row">
+                            <i class="fas fa-phone"></i>
+                            <span>${friend.phone}</span>
+                        </div>
+                    ` : ''}
+                    ${friend.email ? `
+                        <div class="detail-row">
+                            <i class="fas fa-envelope"></i>
+                            <span>${friend.email}</span>
+                        </div>
+                    ` : ''}
+                    ${!isBirthday ? `
+                        <div class="detail-row">
+                            <i class="fas fa-clock"></i>
+                            <span>${daysUntil} days until birthday</span>
+                        </div>
+                    ` : ''}
+                </div>
+                ${friend.notes ? `
+                    <div class="notes-section">
+                        <i class="fas fa-quote-left"></i> ${friend.notes}
+                    </div>
+                ` : ''}
+                <div class="card-actions">
+                    ${isBirthday ? `
+                        <button class="celebrate-btn" onclick="window.celebrateFriend('${friend.id}')" style="width: 100%; margin-bottom: 10px;">
+                            <i class="fas fa-gift"></i> Celebrate Birthday!
+                        </button>
+                    ` : ''}
+                    <button class="btn-edit" onclick="window.editFriend('${friend.id}')">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="btn-delete" onclick="window.deleteFriend('${friend.id}')">
+                        <i class="fas fa-trash-alt"></i> Delete
+                    </button>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Render Functions
+        function renderFriends(friendsList = friends) {
+            const grid = document.getElementById('friendsGrid');
+            const emptyState = document.getElementById('emptyState');
+            
+            grid.innerHTML = '';
+            
+            if (friendsList.length === 0) {
+                emptyState.style.display = 'block';
+                grid.style.display = 'none';
+            } else {
+                emptyState.style.display = 'none';
+                grid.style.display = 'grid';
+                friendsList.forEach(friend => {
+                    grid.appendChild(renderFriendCard(friend));
+                });
+            }
+        }
+
+        function updateBirthdaySpotlight() {
+            const todaysBirthdays = friends.filter(f => isBirthdayToday(f.dob));
+            const spotlight = document.getElementById('birthdaySpotlight');
+            const list = document.getElementById('birthdayFriendsList');
+            
+            if (todaysBirthdays.length > 0) {
+                spotlight.classList.add('active');
+                createConfetti();
+                
+                list.innerHTML = todaysBirthdays.map(f => `
+                    <div class="birthday-card-mini">
+                        <img src="${f.photo || 'https://via.placeholder.com/150'}" alt="${f.name}">
+                        <h3>${f.name}</h3>
+                        <div class="age-badge">${calculateAge(f.dob)} years old</div>
+                        <button class="celebrate-btn" onclick="window.celebrateFriend('${f.id}')">
+                            <i class="fas fa-gift"></i> Celebrate
+                        </button>
+                    </div>
+                `).join('');
+            } else {
+                spotlight.classList.remove('active');
+            }
+        }
+
+        function updateUpcomingBirthdays() {
+            const timeline = document.getElementById('upcomingTimeline');
+            const upcoming = friends
+                .map(f => ({...f, daysUntil: daysUntilBirthday(f.dob)}))
+                .filter(f => f.daysUntil > 0 && f.daysUntil <= 90)
+                .sort((a, b) => a.daysUntil - b.daysUntil)
+                .slice(0, 10);
+            
+            timeline.innerHTML = upcoming.length > 0 ? upcoming.map(f => `
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">${formatDate(f.dob)}</div>
+                        <div class="timeline-name">${f.name}</div>
+                        <div class="countdown-text">
+                            <i class="fas fa-calendar-alt"></i> ${f.daysUntil} days to go • 
+                            <i class="fas fa-heart"></i> ${f.friendType}
+                        </div>
+                    </div>
+                </div>
+            `).join('') : '<p style="text-align: center; color: var(--text-light); font-size: 1.2rem;">No upcoming birthdays in the next 90 days</p>';
+        }
+
+        function updateStats() {
+            const totalFriends = friends.length;
+            const todayCount = friends.filter(f => isBirthdayToday(f.dob)).length;
+            const upcomingCount = friends.filter(f => {
+                const days = daysUntilBirthday(f.dob);
+                return days > 0 && days <= 30;
+            }).length;
+            
+            document.getElementById('totalFriends').textContent = totalFriends;
+            document.getElementById('todayBirthdays').textContent = todayCount;
+            document.getElementById('upcomingCount').textContent = upcomingCount;
+        }
+
+        // CRUD Operations
+        async function loadFriends() {
+            if (!db) return;
+            
+            const q = query(collection(db, 'friends'), orderBy('name'));
+            onSnapshot(q, (snapshot) => {
+                friends = [];
+                snapshot.forEach((doc) => {
+                    friends.push({ id: doc.id, ...doc.data() });
+                });
+                
+                renderFriends();
+                updateBirthdaySpotlight();
+                updateUpcomingBirthdays();
+                updateStats();
+                
+                // Hide loading screen
+                setTimeout(() => {
+                    document.getElementById('loadingScreen').classList.add('hidden');
+                }, 1000);
+            });
+        }
+
+        async function saveFriend(e) {
+            e.preventDefault();
+            
+            if (!db) {
+                showToast('Firebase not configured. Please add your credentials.', 'error');
+                return;
+            }
+            
+            const friendData = {
+                name: document.getElementById('friendName').value,
+                dob: document.getElementById('friendDob').value,
+                photo: document.getElementById('friendPhoto').value || '',
+                friendType: document.getElementById('friendType').value,
+                phone: document.getElementById('friendPhone').value || '',
+                email: document.getElementById('friendEmail').value || '',
+                notes: document.getElementById('friendNotes').value || '',
+                updatedAt: new Date().toISOString()
+            };
+            
+            try {
+                if (editingId) {
+                    await updateDoc(doc(db, 'friends', editingId), friendData);
+                    showToast('Friend updated successfully!');
+                    editingId = null;
+                    document.getElementById('cancelBtn').style.display = 'none';
+                } else {
+                    friendData.createdAt = new Date().toISOString();
+                    await addDoc(collection(db, 'friends'), friendData);
+                    showToast('Friend added successfully!');
+                }
+                
+                document.getElementById('friendForm').reset();
+            } catch (error) {
+                console.error('Error saving friend:', error);
+                showToast('Error saving friend. Please try again.', 'error');
+            }
+        }
+
+        window.editFriend = async function(id) {
+            const friend = friends.find(f => f.id === id);
+            if (!friend) return;
+            
+            editingId = id;
+            document.getElementById('friendName').value = friend.name;
+            document.getElementById('friendDob').value = friend.dob;
+            document.getElementById('friendPhoto').value = friend.photo || '';
+            document.getElementById('friendType').value = friend.friendType;
+            document.getElementById('friendPhone').value = friend.phone || '';
+            document.getElementById('friendEmail').value = friend.email || '';
+            document.getElementById('friendNotes').value = friend.notes || '';
+            document.getElementById('cancelBtn').style.display = 'inline-flex';
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.deleteFriend = async function(id) {
+            if (!confirm('Are you sure you want to remove this friend?')) return;
+            
+            try {
+                await deleteDoc(doc(db, 'friends', id));
+                showToast('Friend removed successfully!');
+            } catch (error) {
+                console.error('Error deleting friend:', error);
+                showToast('Error removing friend. Please try again.', 'error');
+            }
+        };
+
+        window.celebrateFriend = function(id) {
+            const friend = friends.find(f => f.id === id);
+            if (friend) {
+                showBirthdayModal(friend);
+            }
+        };
+
+        // Filter and Sort
+        function filterAndSort() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filterType = document.getElementById('filterType').value;
+            const sortBy = document.getElementById('sortBy').value;
+            
+            let filtered = friends;
+            
+            if (searchTerm) {
+                filtered = filtered.filter(f => 
+                    f.name.toLowerCase().includes(searchTerm) ||
+                    (f.notes && f.notes.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            if (filterType) {
+                filtered = filtered.filter(f => f.friendType === filterType);
+            }
+            
+            filtered.sort((a, b) => {
+                if (sortBy === 'name') {
+                    return a.name.localeCompare(b.name);
+                } else if (sortBy === 'birthday') {
+                    return daysUntilBirthday(a.dob) - daysUntilBirthday(b.dob);
+                } else if (sortBy === 'age') {
+                    return calculateAge(b.dob) - calculateAge(a.dob);
+                }
+                return 0;
+            });
+            
+            renderFriends(filtered);
+        }
+
+        // Event Listeners
+        document.getElementById('friendForm').addEventListener('submit', saveFriend);
+        document.getElementById('searchInput').addEventListener('input', filterAndSort);
+        document.getElementById('filterType').addEventListener('change', filterAndSort);
+        document.getElementById('sortBy').addEventListener('change', filterAndSort);
+        
+        document.getElementById('cancelBtn').addEventListener('click', () => {
+            editingId = null;
+            document.getElementById('friendForm').reset();
+            document.getElementById('cancelBtn').style.display = 'none';
+        });
+        
+        document.getElementById('closeModal').addEventListener('click', () => {
+            document.getElementById('birthdayModal').classList.remove('active');
+        });
+        
+        document.getElementById('birthdayModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('birthdayModal')) {
+                document.getElementById('birthdayModal').classList.remove('active');
+            }
+        });
+
+        // Initialize
+        loadFriends();
+        
+        // Periodic Updates
+        setInterval(() => {
+            updateBirthdaySpotlight();
+            updateUpcomingBirthdays();
+            updateStats();
+        }, 3600000); // Every hour
+    </script>
+</body>
+</html>
